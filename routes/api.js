@@ -57,7 +57,7 @@ module.exports = function (app) {
     delete req.body._id;
     // delete not overwritten keys: 
     Object.keys(req.body).forEach( (k, i) => {
-      if (!req.body[k]) {
+      if (k != 'open' && !req.body[k]) {
         delete req.body[k];
       }
     });
