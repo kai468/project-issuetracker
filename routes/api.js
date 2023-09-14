@@ -38,14 +38,19 @@ module.exports = function (app) {
   const findIssues = async function(req, res) {
     const project = req.params.project; 
     const issues = await Issue.find({...req.body, project: project});
-    res.json({issues});
+    res.json(issues);
   }
 
   const updateIssue = function(req, res) {
     const project = req.params.project;
     const _id = req.body._id;
-    delete req.body._id;
 
+    if (!_id) {
+      res.json({error: "missing _id", _id: _id});
+      return;
+    }
+
+    delete req.body._id;
     // delete not overwritten keys: 
     Object.keys(req.body).forEach( (k, i) => {
       if (!req.body[k]) {
@@ -54,7 +59,7 @@ module.exports = function (app) {
     });
 
     Issue
-      .updateOne({_id: _id, project: project}, req.body)
+      .updateOne({_id: _id, project: project}, {...req.body, updated_on: Date.now()})
       .then(
         success => {
           if (success.modifiedCount == 1) {
@@ -70,6 +75,11 @@ module.exports = function (app) {
   const deleteIssue = function(req, res) {
     const project = req.params.project; 
     const _id = req.body._id;
+
+    if (!_id) {
+      res.json({error: "missing _id", _id: _id});
+      return;
+    }
 
     Issue
       .deleteOne({_id: _id, project: project})
