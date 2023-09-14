@@ -46,7 +46,7 @@ module.exports = function (app) {
     const _id = req.body._id;
 
     if (!_id) {
-      res.json({error: "missing _id", _id: _id});
+      res.json({error: "missing _id"});
       return;
     }
 
@@ -57,6 +57,10 @@ module.exports = function (app) {
         delete req.body[k];
       }
     });
+
+    if (Object.keys(req.body).length == 0) {
+      res.json({error: "no update field(s) sent", _id: _id});
+    }
 
     Issue
       .updateOne({_id: _id, project: project}, {...req.body, updated_on: Date.now()})
