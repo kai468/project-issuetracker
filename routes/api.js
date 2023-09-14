@@ -38,7 +38,7 @@ module.exports = function (app) {
   const findIssues = async function(req, res) {
     const project = req.params.project; 
     try {
-      const issues = await Issue.find({...req.body, project: project});
+      const issues = await Issue.find({...req.query, project: project});
       res.json(issues);
     } catch (err) {
       throw new Error(err);
