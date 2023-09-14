@@ -32,13 +32,17 @@ module.exports = function (app) {
       .then(
         newIssue => res.json(newIssue),
         err => res.json({error: "required field(s) missing"}),
-      );
+      ).catch(err => {throw new Error(err)});
   }
 
   const findIssues = async function(req, res) {
     const project = req.params.project; 
-    const issues = await Issue.find({...req.body, project: project});
-    res.json(issues);
+    try {
+      const issues = await Issue.find({...req.body, project: project});
+      res.json(issues);
+    } catch (err) {
+      throw new Error(err);
+    }  
   }
 
   const updateIssue = function(req, res) {
@@ -60,6 +64,7 @@ module.exports = function (app) {
 
     if (Object.keys(req.body).length == 0) {
       res.json({error: "no update field(s) sent", _id: _id});
+      return; 
     }
 
     Issue
@@ -71,9 +76,8 @@ module.exports = function (app) {
           } else {
             res.json({error: "could not update", _id: _id});
           }
-        },
-        err => res.json({error: "could not update", _id: _id}),
-      );  
+        }
+      ).catch(err => res.json({error: "could not update", _id: _id}));
   }
 
   const deleteIssue = function(req, res) {
@@ -96,7 +100,7 @@ module.exports = function (app) {
           }
         },
         err => res.json({error: "could not delete", _id: _id}),
-      );
+      ).catch(err => {throw new Error(err)});
   }
 
   app.route('/api/issues/:project')

@@ -90,8 +90,8 @@ suite('Functional Tests', function() {
             .end( (err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(200); 
-                expect(res.body.issues).to.be.an('array');
-                res.body.issues.every(i => expect(i.project).to.equal(PROJECT));
+                expect(res.body).to.be.an('array');
+                res.body.every(i => expect(i.project).to.equal(PROJECT));
                 done();
             });
     });
@@ -107,8 +107,8 @@ suite('Functional Tests', function() {
             .end( (err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(200); 
-                res.body.issues.every(i => expect(i.project).to.equal(PROJECT));
-                res.body.issues.every(i => expect(i.created_by).to.equal("dummy"));
+                res.body.every(i => expect(i.project).to.equal(PROJECT));
+                res.body.every(i => expect(i.created_by).to.equal("dummy"));
                 done();
             });
     });
@@ -125,9 +125,9 @@ suite('Functional Tests', function() {
             .end( (err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(200); 
-                res.body.issues.every(i => expect(i.project).to.equal(PROJECT));
-                res.body.issues.every(i => expect(i.created_by).to.equal("dummy"));
-                res.body.issues.every(i => expect(i.issue_text).to.equal("dummy"));
+                res.body.every(i => expect(i.project).to.equal(PROJECT));
+                res.body.every(i => expect(i.created_by).to.equal("dummy"));
+                res.body.every(i => expect(i.issue_text).to.equal("dummy"));
                 done();
             });
     });
@@ -181,7 +181,7 @@ suite('Functional Tests', function() {
             .end( (err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(200); 
-                expect(res.body.error).to.equal("could not update");
+                expect(res.body.error).to.equal("missing _id");
                 done();
             });
     });
@@ -197,12 +197,12 @@ suite('Functional Tests', function() {
             .end( (err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(200); 
-                expect(res.body.error).to.equal("could not update");
+                expect(res.body.error).to.equal("no update field(s) sent");
                 expect(res.body._id).to.equal("6503185d0a226aa182f9f58e");
                 done();
             });
     });
-
+ 
     test('Update an issue with an invalid _id: PUT request to /api/issues/{project}', function (done) {
         const body = {
             _id: "ffffffffffffffffffffffff",
@@ -217,7 +217,7 @@ suite('Functional Tests', function() {
                 expect(res).to.have.status(200); 
                 expect(res.body.error).to.equal("could not update");
                 expect(res.body._id).to.equal("ffffffffffffffffffffffff");
-                done();
+                done(); 
             });
     });
 
@@ -258,7 +258,7 @@ suite('Functional Tests', function() {
             .end( (err, res) => {
                 expect(err).to.be.null;
                 expect(res).to.have.status(200); 
-                expect(res.body.error).to.equal("could not delete");
+                expect(res.body.error).to.equal("missing _id");
                 done();
             });
     });
@@ -276,32 +276,9 @@ suite('Functional Tests', function() {
                 expect(res).to.have.status(200); 
                 expect(res.body.error).to.equal("could not delete");
                 expect(res.body._id).to.equal("ffffffffffffffffffffffff");
-
                 done();
             });
     });
 
-    // TEMPLATE: 
-    /*
-    test('', function(done) {
-        const body = {
-            issue_title: "dummy",
-            status_text: "dummy",
-            created_by: "dummy",
-            assigned_to: "dummy",
-            issue_text: "dummy"
-        }
-        chai
-            .request(server)
-            .get('/api/issues/' + PROJECT)
-            .send(body)
-            .end( (err, res) => {
-                expect(err).to.be.null;
-                expect(res).to.have.status(200); 
 
-
-                done();
-            });
-    });
-    */
 });
